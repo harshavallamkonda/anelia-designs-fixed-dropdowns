@@ -122,9 +122,11 @@
     <!-- Hero Section with Optimized Video -->
     <section id="home" class="hero" role="banner" style="position:relative;overflow:hidden;">
         <!-- Fallback background image for immediate display -->
-        <div class="hero-fallback-bg" style="position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:1;background:linear-gradient(135deg,#1e1e1e 0%,#000 100%);background-size:cover;background-position:center;"></div>
-        
-        <!-- Optimized video with multiple formats and sizes -->
+        <picture class="hero-fallback-bg" style="position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:1;">
+            <img src="assets/logo.jpg" alt="Anelia Designs" style="width:100vw;height:100vh;object-fit:cover;filter:brightness(0.5);" loading="eager">
+        </picture>
+
+        <!-- Optimized video for all devices -->
         <video 
             id="heroVideo"
             class="hero-bg-video" 
@@ -133,11 +135,10 @@
             loop 
             playsinline 
             preload="auto"
-            poster="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1920 1080'%3E%3Crect width='1920' height='1080' fill='%23000'/%3E%3C/svg%3E"
+            poster="assets/logo.jpg"
             style="position:absolute;top:0;left:0;width:100vw;height:100vh;object-fit:cover;z-index:2;pointer-events:none;opacity:0;transition:opacity 1s ease;" 
             aria-hidden="true">
-            <source src="assets/hero_background.av1.webm" type="video/webm" media="(min-width: 768px)">
-            <!--<source src="assets/hero_background.mp4" type="video/mp4">-->
+            <source src="assets/hero_background.av1.webm" type="video/webm">
             Your browser does not support the video tag.
         </video>
         

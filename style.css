@@ -1455,6 +1455,7 @@ h6 { font-size: 1.1rem; }
 
 /* Carousel navigation removed - auto-scroll only */
 
+
 .projects-track {
     display: flex;
     gap: 25px;
@@ -1462,6 +1463,11 @@ h6 { font-size: 1.1rem; }
     width: max-content;
     touch-action: pan-x;
     cursor: grab;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    /* Enable GPU acceleration for smoother animation */
 }
 
 .projects-track:active {
@@ -1496,6 +1502,11 @@ h6 { font-size: 1.1rem; }
     position: relative;
     cursor: pointer;
     user-select: none;
+    will-change: transform;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    /* Enable GPU acceleration for hover/drag */
 }
 
 .project-card:hover {
@@ -1622,8 +1633,12 @@ h6 { font-size: 1.1rem; }
     }
     
     .projects-track {
-        animation: autoScrollMobile 13s linear infinite;
+        animation: autoScrollMobile 12s linear infinite;
         gap: 20px;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
     
     @keyframes autoScrollMobile {
@@ -1636,7 +1651,11 @@ h6 { font-size: 1.1rem; }
     }
     
     .project-card {
-        flex: 0 0 280px;
+        flex: 0 0 250px;
+        will-change: transform;
+        backface-visibility: hidden;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
     }
     
     .process-steps {
