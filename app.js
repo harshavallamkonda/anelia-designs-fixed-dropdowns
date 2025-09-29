@@ -1660,8 +1660,9 @@ function renderProjects() {
     // Clear any error messages
     track.innerHTML = '';
     
-    // Create simple, working project cards
-    projectsData.forEach((project, projectIndex) => {
+    // Filter out 'Manoj Executive Residence' by id before rendering
+    const filteredProjects = projectsData.filter(project => project.id !== 'manoj');
+    filteredProjects.forEach((project, projectIndex) => {
         const card = document.createElement('article');
         card.className = 'project-card';
         card.setAttribute('data-project-id', project.id);
