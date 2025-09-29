@@ -1,0 +1,361 @@
+{
+  "version": 1759144754841,
+  "projects": [
+    {
+      "id": "archan",
+      "title": "Archan Luxury Residence",
+      "folderName": "Archan",
+      "images": [
+        {
+          "original": {
+            "src": "Archan/PHOTO-2023-11-25-10-29-41 2.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Archan Luxury Residence - PHOTO 2023 11 25 10 29 41 2"
+          },
+          "variants": [],
+          "isLCP": true
+        },
+        {
+          "original": {
+            "src": "Archan/PHOTO-2023-11-25-10-29-44.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Archan Luxury Residence - PHOTO 2023 11 25 10 29 44"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Archan/PHOTO-2023-11-25-10-29-46.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Archan Luxury Residence - PHOTO 2023 11 25 10 29 46"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Archan/PHOTO-2023-11-25-10-29-47.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Archan Luxury Residence - PHOTO 2023 11 25 10 29 47"
+          },
+          "variants": [],
+          "isLCP": false
+        }
+      ],
+      "description": "Premium residential interior design featuring contemporary aesthetics with traditional Indian elements. Custom furniture and elegant color schemes create sophisticated living spaces.",
+      "category": "Luxury Residential",
+      "totalImages": 4
+    },
+    {
+      "id": "banaswadi",
+      "title": "Banaswadi Modern Apartment",
+      "folderName": "Banaswadi",
+      "images": [
+        {
+          "original": {
+            "src": "Banaswadi/PHOTO-2023-07-20-23-11-58.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Banaswadi Modern Apartment - PHOTO 2023 07 20 23 11 58"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Banaswadi/PHOTO-2023-11-25-10-09-39.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Banaswadi Modern Apartment - PHOTO 2023 11 25 10 09 39"
+          },
+          "variants": [],
+          "isLCP": false
+        }
+      ],
+      "description": "Stylish apartment interior design with space optimization and modern functionality. Smart storage solutions and vibrant decor enhance urban living comfort.",
+      "category": "Modern Apartment",
+      "totalImages": 2
+    },
+    {
+      "id": "harsha",
+      "title": "Harsha Family Home",
+      "folderName": "Harsha",
+      "images": [
+        {
+          "original": {
+            "src": "Harsha/PHOTO-2023-11-25-10-14-03 3.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Harsha Family Home - PHOTO 2023 11 25 10 14 03 3"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Harsha/PHOTO-2023-11-25-10-14-07 2.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Harsha Family Home - PHOTO 2023 11 25 10 14 07 2"
+          },
+          "variants": [],
+          "isLCP": false
+        }
+      ],
+      "description": "Warm family home interior design blending comfort with style. Child-friendly spaces and cozy living areas perfect for modern family lifestyle.",
+      "category": "Family Home",
+      "totalImages": 2
+    },
+    {
+      "id": "hp-cafeteria",
+      "title": "HP Corporate Cafeteria",
+      "folderName": "HP Cafeteria",
+      "images": [
+        {
+          "original": {
+            "src": "HP Cafeteria/IMG_20220429_124409.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "HP Corporate Cafeteria - IMG 20220429 124409"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "HP Cafeteria/IMG_20220429_124702.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "HP Corporate Cafeteria - IMG 20220429 124702"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "HP Cafeteria/IMG_20220502_023305.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "HP Corporate Cafeteria - IMG 20220502 023305"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "HP Cafeteria/IMG_20220502_023324.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "HP Corporate Cafeteria - IMG 20220502 023324"
+          },
+          "variants": [],
+          "isLCP": false
+        }
+      ],
+      "description": "Professional cafeteria design for HP with modern industrial aesthetics. Efficient layout and contemporary furnishing create an inviting dining environment.",
+      "category": "Commercial Design",
+      "totalImages": 4
+    },
+    {
+      "id": "laggare",
+      "title": "Laggare Contemporary Villa",
+      "folderName": "Laggare",
+      "images": [
+        {
+          "original": {
+            "src": "Laggare/IMG_0193.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Laggare Contemporary Villa - IMG 0193"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Laggare/PHOTO-2023-11-25-10-02-18.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Laggare Contemporary Villa - PHOTO 2023 11 25 10 02 18"
+          },
+          "variants": [],
+          "isLCP": false
+        }
+      ],
+      "description": "Luxurious villa interior design with open-concept living and premium finishes. Seamless indoor-outdoor flow and sophisticated material palette.",
+      "category": "Contemporary Villa",
+      "totalImages": 2
+    },
+    {
+      "id": "manoj",
+      "title": "Manoj Executive Residence",
+      "folderName": "Manoj",
+      "images": [
+        {
+          "original": {
+            "src": "Manoj/DSC00272.JPG",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Manoj Executive Residence - DSC00272"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Manoj/DSC00278.JPG",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Manoj Executive Residence - DSC00278"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Manoj/DSC00392.JPG",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Manoj Executive Residence - DSC00392"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Manoj/IMG20230309135304.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Manoj Executive Residence - IMG20230309135304"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Manoj/IMG20230313200835.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Manoj Executive Residence - IMG20230313200835"
+          },
+          "variants": [],
+          "isLCP": false
+        }
+      ],
+      "description": "Executive home interior design featuring rich textures and bold design elements. Professional yet comfortable spaces ideal for entertaining.",
+      "category": "Executive Residence",
+      "totalImages": 5
+    },
+    {
+      "id": "ramu-house",
+      "title": "Ramu Modern Residence",
+      "folderName": "Ramu House",
+      "images": [
+        {
+          "original": {
+            "src": "Ramu House/PHOTO-2023-09-20-21-27-45 2.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Ramu Modern Residence - PHOTO 2023 09 20 21 27 45 2"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Ramu House/PHOTO-2023-09-20-21-27-45.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Ramu Modern Residence - PHOTO 2023 09 20 21 27 45"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Ramu House/PHOTO-2023-09-20-21-27-47.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Ramu Modern Residence - PHOTO 2023 09 20 21 27 47"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Ramu House/PHOTO-2023-09-20-21-27-49 2.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Ramu Modern Residence - PHOTO 2023 09 20 21 27 49 2"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Ramu House/PHOTO-2023-09-20-21-27-50 2.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Ramu Modern Residence - PHOTO 2023 09 20 21 27 50 2"
+          },
+          "variants": [],
+          "isLCP": false
+        }
+      ],
+      "description": "Contemporary residential interior design featuring clean lines and functional elegance. Modern living spaces with thoughtful design elements and premium finishes.",
+      "category": "Modern Residence",
+      "totalImages": 5
+    },
+    {
+      "id": "reshma",
+      "title": "Reshma Boutique Home",
+      "folderName": "Reshma",
+      "images": [
+        {
+          "original": {
+            "src": "Reshma/IMG_20220818_150626.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Reshma Boutique Home - IMG 20220818 150626"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Reshma/IMG_20220818_150751.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Reshma Boutique Home - IMG 20220818 150751"
+          },
+          "variants": [],
+          "isLCP": false
+        },
+        {
+          "original": {
+            "src": "Reshma/IMG_20220818_150844.jpg",
+            "width": 1920,
+            "height": 1080,
+            "alt": "Reshma Boutique Home - IMG 20220818 150844"
+          },
+          "variants": [],
+          "isLCP": false
+        }
+      ],
+      "description": "Boutique residential design with personalized touches and artistic flair. Unique color combinations and custom design elements reflect individual style.",
+      "category": "Boutique Residential",
+      "totalImages": 3
+    }
+  ],
+  "meta": {
+    "totalProjects": 8,
+    "totalImages": 27,
+    "buildDate": "2025-09-29T11:19:14.841Z",
+    "optimized": false
+  }
+}
