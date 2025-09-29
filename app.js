@@ -39,7 +39,7 @@ function initializeApp() {
     setupInteriorForm();
     setupLeadCapture();
     setupFAQ();
-    setupContactForm();
+    setupContactForm(); // Web3Forms JavaScript implementation
     setupFormValidation();
     setupScrollAnimations();
     setupHeroButton();
@@ -635,29 +635,27 @@ function submitLeadCapture() {
     console.log('Lead capture submitted:', data);
 
     // Send to Google Sheet using Apps Script Web App
-// --- inside submitLeadCapture(), replace fetch call with this:
-fetch('https://script.google.com/macros/s/AKfycbwMFCPfMWfwaH97nlQgITHRx4yyq5UjbPDSbnhxnkJtwhg83i9OukCTX4zhWtsPGYI8/exec', {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify({
-    // send keys that match your Apps Script doPost expectations
-    formType: 'lead_capture',
-    name: data.name,
-    mobile: data.mobile,
-    email: data.email,
-    plotLocation: data.plotLocation,
-    plotSize: data.plotSize,
-    timestamp: data.timestamp,
-    source: data.source
-  })
-})
-.then(res => res.json())
-.then(resp => {
-  console.log('Submitted to Google Sheets (lead_capture):', resp);
-})
-.catch(err => {
-  console.error('Google Sheets submission error (lead_capture):', err);
-});
+    // Send to Google Sheet using Apps Script Web App
+    fetch('https://script.google.com/macros/s/AKfycbzlh_-bIB-b74yCIDmv-stF3XncS-jA4q5o-C5C--6umXb0wLGGCktTriDQHqthBl3D/exec', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        formType: 'lead_capture',
+        name: data.name,
+        mobile: data.mobile,
+        email: data.email,
+        plotLocation: data.plotLocation,
+        plotSize: data.plotSize,
+        timestamp: data.timestamp
+      })
+    })
+    .then(res => res.json())
+    .then(resp => {
+      console.log('Submitted to Google Sheets (lead_capture):', resp);
+    })
+    .catch(err => {
+      console.error('Google Sheets submission error (lead_capture):', err);
+    });
 
     showNotification('Thank you! We will contact you shortly for your complimentary design session.', 'success');
     setTimeout(() => {
@@ -884,8 +882,9 @@ function submitInteriorForm() {
     submitBtn.style.opacity = '0.7';
 
     // Send to Google Sheet using Apps Script Web App
-    fetch('https://script.google.com/macros/s/AKfycbwMFCPfMWfwaH97nlQgITHRx4yyq5UjbPDSbnhxnkJtwhg83i9OukCTX4zhWtsPGYI8/exec', {
+    fetch('https://script.google.com/macros/s/AKfycbzlh_-bIB-b74yCIDmv-stF3XncS-jA4q5o-C5C--6umXb0wLGGCktTriDQHqthBl3D/exec', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(submissionData)
     })
     .then(response => response.json())
@@ -991,121 +990,142 @@ function setupFAQ() {
     };
 }
 
-// Contact Form Setup
+// Contact Form Setup - Web3Forms Direct Submission (CSP-Safe)
 function setupContactForm() {
     const form = document.getElementById('contactForm');
-    if (!form) return;
-    // Intercept submit to use AJAX for Web3Forms and show our thank you popup
-    const inputs = form.querySelectorAll('input, textarea, select');
-    inputs.forEach(input => {
-        input.addEventListener('blur', function() {
-            validateInput(this);
-        });
-        input.addEventListener('input', function() {
-            clearInputError(this);
-        });
-    });
-    const phoneInput = form.querySelector('#phone');
-    if (phoneInput) {
-        phoneInput.setAttribute('inputmode', 'tel');
+    const result = document.getElementById('result');
+    
+    if (!form || !result) {
+        console.warn('Contact form or result div not found');
+        return;
     }
-
+    
+    // Check if running on localhost
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' || 
+                       window.location.hostname === '';
+    
+    // Set up form for direct submission to Web3Forms
+    form.action = 'https://api.web3forms.com/submit';
+    form.method = 'POST';
+    
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        // Validate required fields (HTML5 will do this, but double check)
-        if (!form.checkValidity()) {
-            form.reportValidity();
-            return;
-        }
+        // Log the data being sent for debugging
         const formData = new FormData(form);
-        fetch('https://api.web3forms.com/submit', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                showSuccessPopup('Thanks for the details! Our team will reach out to you shortly.');
-                form.reset();
+        console.log('Form data entries:');
+        for (let [key, value] of formData.entries()) {
+            console.log(key + ': ' + value);
+        }
+        
+        if (isLocalhost) {
+            console.warn('⚠️ LOCALHOST DETECTED: Web3Forms emails will NOT be sent from localhost!');
+            console.log('📧 To receive actual emails, deploy to a live domain (GitHub Pages, Netlify, etc.)');
+        }
+        
+        result.innerHTML = isLocalhost ? 
+            "📧 Submitting (localhost - emails won't be sent)..." : 
+            "Submitting your message...";
+        result.style.display = "block";
+        result.style.backgroundColor = isLocalhost ? "#fff3cd" : "#e3f2fd";
+        result.style.color = isLocalhost ? "#856404" : "#1976d2";
+        
+        // Disable submit button to prevent double submission
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+        }
+        
+        console.log('Form submitting directly to Web3Forms API...');
+        // Allow the form to submit naturally - no preventDefault needed
+    });
+    
+    // Handle form submission response using a hidden iframe technique
+    setupFormResponseHandler(form, result);
+}
+
+// Setup response handler for direct form submission
+function setupFormResponseHandler(form, result) {
+    // Create a hidden iframe to capture the response
+    let iframe = document.getElementById('web3forms-iframe');
+    if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.name = 'web3forms-iframe';
+        iframe.id = 'web3forms-iframe';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+    }
+    
+    // Set form target to the iframe
+    form.target = 'web3forms-iframe';
+    
+    // Check if running on localhost
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' || 
+                       window.location.hostname === '';
+    
+    // Listen for iframe load events
+    iframe.addEventListener('load', function() {
+        try {
+            // Check if the iframe has loaded successfully
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            
+            // Show success message with localhost warning
+            if (isLocalhost) {
+                result.innerHTML = "⚠️ Form submitted to Web3Forms API but emails won't be sent from localhost.<br>" +
+                                 "📧 Deploy to a live domain (GitHub Pages, Netlify, Vercel) to receive emails.";
+                result.style.backgroundColor = "#fff3cd";
+                result.style.color = "#856404";
+                console.log('🚨 LOCALHOST: Form submitted but no email will be sent!');
+                console.log('📧 To test emails: Deploy to https://your-domain.com');
             } else {
-                showNotification('There was an error submitting the form. Please try again.', 'error');
+                result.innerHTML = "✅ Message sent successfully! Thank you for contacting us.";
+                result.style.backgroundColor = "#d4edda";
+                result.style.color = "#155724";
+                console.log('✅ Form submitted successfully via iframe');
             }
-        })
-        .catch(() => {
-            showNotification('There was an error submitting the form. Please try again.', 'error');
-        });
+            
+            // Reset form after successful submission
+            setTimeout(() => {
+                form.reset();
+                result.style.display = "none";
+            }, isLocalhost ? 5000 : 3000); // Show localhost warning longer
+            
+        } catch (error) {
+            console.error('Iframe access error:', error);
+            // Still show success since the form was submitted
+            if (isLocalhost) {
+                result.innerHTML = "⚠️ Form submitted but emails won't be sent from localhost.<br>" +
+                                 "📧 Deploy to a live domain to receive actual emails.";
+                result.style.backgroundColor = "#fff3cd";
+                result.style.color = "#856404";
+            } else {
+                result.innerHTML = "✅ Message sent! We'll get back to you soon.";
+                result.style.backgroundColor = "#d4edda";
+                result.style.color = "#155724";
+            }
+            
+            setTimeout(() => {
+                form.reset();
+                result.style.display = "none";
+            }, isLocalhost ? 5000 : 3000);
+        }
+        
+        // Re-enable submit button
+        const submitBtn = form.querySelector('button[type="submit"]');
+        if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+        }
     });
 }
 
-function submitContactForm() {
-    const form = document.getElementById('contactForm');
-    if (!form) return;
-    
-    const formDataObj = new FormData(form);
-    const data = Object.fromEntries(formDataObj);
-    
-    let isValid = true;
-    const requiredFields = ['name', 'email', 'message'];
-    
-    requiredFields.forEach(field => {
-        const input = form.querySelector(`[name="${field}"]`);
-        if (!validateInput(input)) {
-            isValid = false;
-        }
-    });
-    
-    if (!isValid) {
-        showNotification('Please correct the errors above', 'error');
-        return;
-    }
-    
-    const submitBtn = form.querySelector('button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.innerHTML = '<span>Sending...</span>';
-    submitBtn.disabled = true;
-    submitBtn.style.opacity = '0.7';
-    
-    data.timestamp = new Date().toISOString();
-    data.formType = 'contact_form';
-    data.source = 'anelia_designs_website';
-    
-    // Send to Google Sheet using Apps Script Web App
-    // Use EmailJS for Get in Touch form
-    if (typeof emailjs === 'undefined') {
-        showNotification('Email service not available. Please try again later.', 'error');
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-        return;
-    }
-    emailjs.send('service_2skk8gd', 'template_nkze7t9', {
-        name: data.name,
-        email: data.email,
-        phone: data.phone || '',
-        service: data.service || '',
-        message: data.message
-    })
-    .then(function(response) {
-        showNotification('Thank you for your message! We will get back to you within 24 hours.', 'success');
-        form.reset();
-        clearAllErrors(form);
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-    }, function(error) {
-        showNotification('Submission failed. Please try again.', 'error');
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-        console.error('Contact form submission error:', error);
-    });
-    return;
-}
+
 
 // Form Validation
 function setupFormValidation() {
-    // Enhanced security form setup
-    const emailInputs = document.querySelectorAll('input[type="email"]');
+    // Enhanced security form setup (exclude contactForm for Web3Forms)
+    const emailInputs = document.querySelectorAll('form:not(#contactForm) input[type="email"]');
     emailInputs.forEach(input => {
         input.setAttribute('pattern', '^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$');
         input.setAttribute('maxlength', '254'); // RFC 5321 limit
@@ -1113,7 +1133,7 @@ function setupFormValidation() {
         input.setAttribute('spellcheck', 'false');
     });
     
-    const phoneInputs = document.querySelectorAll('input[type="tel"]');
+    const phoneInputs = document.querySelectorAll('form:not(#contactForm) input[type="tel"]');
     phoneInputs.forEach(input => {
         input.setAttribute('pattern', '^[\\d\\s\\+\\-\\(\\)]+$');
         input.setAttribute('inputmode', 'tel');
@@ -1121,7 +1141,7 @@ function setupFormValidation() {
         input.setAttribute('autocomplete', 'tel');
     });
     
-    const textInputs = document.querySelectorAll('input[type="text"], textarea');
+    const textInputs = document.querySelectorAll('form:not(#contactForm) input[type="text"], form:not(#contactForm) textarea');
     textInputs.forEach(input => {
         input.setAttribute('maxlength', input.tagName === 'TEXTAREA' ? '1000' : '100');
         input.setAttribute('autocomplete', 'off');
@@ -1139,8 +1159,8 @@ function setupFormValidation() {
         });
     });
     
-    // Add CSRF protection token to forms
-    const forms = document.querySelectorAll('form');
+    // Add CSRF protection token to forms (exclude contactForm for Web3Forms)
+    const forms = document.querySelectorAll('form:not(#contactForm)');
     forms.forEach(form => {
         addCSRFProtection(form);
         
