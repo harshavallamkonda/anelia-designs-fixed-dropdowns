@@ -1622,7 +1622,7 @@ h6 { font-size: 1.1rem; }
     }
     
     .projects-track {
-        animation: autoScrollMobile 9s linear infinite;
+        animation: autoScrollMobile 13s linear infinite;
         gap: 20px;
     }
     
