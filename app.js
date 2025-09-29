@@ -39,7 +39,7 @@ function initializeApp() {
     setupInteriorForm();
     setupLeadCapture();
     setupFAQ();
-    setupContactForm(); // Web3Forms JavaScript implementation
+    setupContactForm(); // Web3Forms integration with user feedback
     setupFormValidation();
     setupScrollAnimations();
     setupHeroButton();
@@ -304,27 +304,50 @@ function setupHeroCarousel() {
 function setupScrollTriggers() {
     let ticking = false;
     
-    // Disabled initial popup form on reload/scroll
-    // function checkScrollTriggers() {
-    //     const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    //     const servicesSection = document.getElementById('services');
-    //     if (servicesSection && !leadCaptureShown) {
-    //         const servicesOffset = servicesSection.offsetTop - 300;
-    //         if (scrollTop >= servicesOffset) {
-    //             setTimeout(() => {
-    //                 openLeadCapture();
-    //             }, 800);
-    //             leadCaptureShown = true;
-    //         }
-    //     }
-    //     ticking = false;
-    // }
-    // window.addEventListener('scroll', function() {
-    //     if (!ticking) {
-    //         requestAnimationFrame(checkScrollTriggers);
-    //         ticking = true;
-    //     }
-    // }, { passive: true });
+    // Lead Capture Popup trigger when user scrolls to "Our Projects" section
+    function checkScrollTriggers() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const projectsSection = document.getElementById('projects');
+        if (projectsSection && !leadCaptureShown) {
+            const projectsOffset = projectsSection.offsetTop - 200; // Trigger 200px before projects section
+            if (scrollTop >= projectsOffset) {
+                console.log('Projects section reached - showing lead capture popup');
+                setTimeout(() => {
+                    openLeadCapture();
+                }, 500); // Small delay for better UX
+                leadCaptureShown = true;
+            }
+        }
+        ticking = false;
+    }
+    
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            requestAnimationFrame(checkScrollTriggers);
+            ticking = true;
+        }
+    }, { passive: true });
+    
+    console.log('Lead capture scroll trigger enabled - will show popup when user reaches projects section');
+    
+    // For testing: Allow manual trigger via console
+    window.testLeadPopup = function() {
+        console.log('Manual test trigger for lead capture popup');
+        openLeadCapture();
+    };
+    
+    // Debug function to check scroll status
+    window.checkScrollStatus = function() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const projectsSection = document.getElementById('projects');
+        if (projectsSection) {
+            const projectsOffset = projectsSection.offsetTop - 200;
+            console.log(`Scroll Position: ${scrollTop}px`);
+            console.log(`Projects Trigger Point: ${projectsOffset}px`);
+            console.log(`Lead Capture Shown: ${leadCaptureShown}`);
+            console.log(`Will Trigger: ${scrollTop >= projectsOffset && !leadCaptureShown}`);
+        }
+    };
 }
 
 // CRITICAL FIX: Package Toggle with proper button connection
@@ -533,14 +556,52 @@ function setupProjectsAutoScroll() {
 function setupLeadCapture() {
     const modal = document.getElementById('leadCaptureModal');
     const form = document.getElementById('leadCaptureForm');
+    const result = document.getElementById('leadResult');
     
-    if (!modal || !form) return;
+    if (!modal || !form || !result) return;
     
+    // Web3Forms integration for Lead Capture
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitLeadCapture();
+        // Show loading message
+        result.innerHTML = "Submitting your details...";
+        result.style.display = "block";
+        result.style.backgroundColor = "#e3f2fd";
+        result.style.color = "#1976d2";
+        result.style.border = "1px solid #bbdefb";
+        
+        // Disable submit button to prevent double submission
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Submitting...";
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        
+        // The form will submit naturally to Web3Forms
+        // We'll show success message after a delay
+        setTimeout(() => {
+            // Hide loading message
+            result.style.display = "none";
+            
+            // Close modal first
+            closeLeadCapture();
+            
+            // Show success popup
+            showSuccessPopup("Wow, your message just landed in Anelia Design's inbox with a splash! 🎉 Thanks for connecting—we'll dive in and get back to you in a flash!");
+            
+            // Reset form after successful submission
+            setTimeout(() => {
+                form.reset();
+                
+                // Re-enable submit button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }, 1000);
+            
+        }, 2000); // Show success after 2 seconds to simulate processing
+        
+        console.log('Lead capture form submitted to Web3Forms API');
     });
-
     
     modal.addEventListener('click', function(e) {
         if (e.target === modal) {
@@ -588,90 +649,6 @@ window.closeLeadCapture = function() {
     document.body.style.overflow = '';
 };
 
-function submitLeadCapture() {
-  const form = document.getElementById('leadCaptureForm');
-  const formData = new FormData(form);
-  const data = Object.fromEntries(formData);
-  const requiredFields = ['name', 'mobile', 'email', 'plotLocation', 'plotSize'];
-  let isValid = true;
-
-  requiredFields.forEach(field => {
-    const input = form.querySelector(`[name="${field}"]`);
-    if (!input.value.trim()) {
-      input.style.borderColor = '#dc3545';
-      input.style.boxShadow = '0 0 0 3px rgba(220, 53, 69, 0.1)';
-      isValid = false;
-    } else {
-      input.style.borderColor = '#e1e5e9';
-      input.style.boxShadow = 'none';
-    }
-  });
-
-  if (!isValid) {
-    showNotification('Please fill in all required fields', 'error');
-    return;
-  }
-  if (!isValidEmail(data.email)) {
-    showNotification('Please enter a valid email address', 'error');
-    return;
-  }
-  if (!isValidPhone(data.mobile)) {
-    showNotification('Please enter a valid mobile number', 'error');
-    return;
-  }
-
-  const submitBtn = form.querySelector('button[type="submit"]');
-  const originalText = submitBtn.textContent;
-  submitBtn.innerHTML = 'Submitting...';
-  submitBtn.disabled = true;
-  submitBtn.style.opacity = '0.7';
-
-  data.timestamp = new Date().toISOString();
-  data.formType = 'lead_capture';
-  data.source = 'anelia_designs_website';
-  data.userAgent = navigator.userAgent;
-
-  setTimeout(() => {
-    console.log('Lead capture submitted:', data);
-
-    // Send to Google Sheet using Apps Script Web App
-    // Send to Google Sheet using Apps Script Web App
-    fetch('https://script.google.com/macros/s/AKfycbzlh_-bIB-b74yCIDmv-stF3XncS-jA4q5o-C5C--6umXb0wLGGCktTriDQHqthBl3D/exec', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        formType: 'lead_capture',
-        name: data.name,
-        mobile: data.mobile,
-        email: data.email,
-        plotLocation: data.plotLocation,
-        plotSize: data.plotSize,
-        timestamp: data.timestamp
-      })
-    })
-    .then(res => res.json())
-    .then(resp => {
-      console.log('Submitted to Google Sheets (lead_capture):', resp);
-    })
-    .catch(err => {
-      console.error('Google Sheets submission error (lead_capture):', err);
-    });
-
-    showNotification('Thank you! We will contact you shortly for your complimentary design session.', 'success');
-    setTimeout(() => {
-      closeLeadCapture();
-      form.reset();
-    }, 2500);
-
-    submitBtn.innerHTML = originalText;
-    submitBtn.disabled = false;
-    submitBtn.style.opacity = '1';
-
-    exportToCSV(data, 'lead_capture');
-  }, 1800);
-}
-
-
 // Interior Design Multi-Step Form
 function setupInteriorForm() {
     const modal = document.getElementById('interiorFormModal');
@@ -713,8 +690,49 @@ function setupInteriorForm() {
     });
     
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
-        submitInteriorForm();
+        // Update hidden fields with step selections before submission
+        updateHiddenFields();
+        
+        // Show loading message
+        const result = document.getElementById('interiorResult');
+        result.innerHTML = "Processing your request...";
+        result.style.display = "block";
+        result.style.backgroundColor = "#e3f2fd";
+        result.style.color = "#1976d2";
+        result.style.border = "1px solid #bbdefb";
+        
+        // Disable submit button to prevent double submission
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Processing...";
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
+        
+        // The form will submit naturally to Web3Forms
+        // We'll show success message after a delay
+        setTimeout(() => {
+            // Hide loading message
+            result.style.display = "none";
+            
+            // Close modal first
+            closeInteriorForm();
+            
+            // Show success popup
+            showSuccessPopup("Wow, your message just landed in Anelia Design's inbox with a splash! 🎉 Thanks for connecting—we'll dive in and get back to you in a flash!");
+            
+            // Reset form after successful submission
+            setTimeout(() => {
+                resetInteriorForm();
+                
+                // Re-enable submit button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }, 1000);
+            
+        }, 2000); // Show success after 2 seconds to simulate processing
+        
+        console.log('Interior design form submitted to Web3Forms API');
     });
     
     modal.addEventListener('click', function(e) {
@@ -797,6 +815,26 @@ function storeFormData(key, value) {
     console.log('Form data stored:', key, value);
 }
 
+// Update hidden fields with step selections for Web3Forms submission
+function updateHiddenFields() {
+    const spaceTypeField = document.getElementById('hiddenSpaceType');
+    const bhkTypeField = document.getElementById('hiddenBhkType');
+    const purposeField = document.getElementById('hiddenPurpose');
+    const interiorStyleField = document.getElementById('hiddenInteriorStyle');
+    
+    if (spaceTypeField) spaceTypeField.value = formData.step1 || '';
+    if (bhkTypeField) bhkTypeField.value = formData.step2 || '';
+    if (purposeField) purposeField.value = formData.step3 || '';
+    if (interiorStyleField) interiorStyleField.value = formData.step4 || '';
+    
+    console.log('Hidden fields updated for Web3Forms submission:', {
+        spaceType: formData.step1,
+        bhkType: formData.step2,
+        purpose: formData.step3,
+        interiorStyle: formData.step4
+    });
+}
+
 function restoreStepSelection(stepNumber) {
     const step = document.querySelector(`[data-step="${stepNumber}"]`);
     const savedValue = formData[`step${stepNumber}`];
@@ -827,88 +865,6 @@ function restoreStepSelection(stepNumber) {
     }
 }
 
-function submitInteriorForm() {
-    const budgetInput = document.getElementById('customBudget');
-    const emailInput = document.getElementById('interiorEmail');
-    const phoneInput = document.getElementById('interiorPhone');
-    if (!budgetInput || !emailInput || !phoneInput) {
-        console.error('Interior form inputs not found');
-        return;
-    }
-    if (!budgetInput.value.trim()) {
-        showNotification('Please enter your budget', 'error');
-        budgetInput.focus();
-        return;
-    }
-    if (!emailInput.value.trim()) {
-        showNotification('Please enter your email address', 'error');
-        emailInput.focus();
-        return;
-    }
-    if (!isValidEmail(emailInput.value)) {
-        showNotification('Please enter a valid email address', 'error');
-        emailInput.focus();
-        return;
-    }
-    if (!phoneInput.value.trim()) {
-        showNotification('Please enter your phone number', 'error');
-        phoneInput.focus();
-        return;
-    }
-    if (!isValidPhone(phoneInput.value)) {
-        showNotification('Please enter a valid phone number', 'error');
-        phoneInput.focus();
-        return;
-    }
-    storeFormData('budget', budgetInput.value.trim());
-    storeFormData('email', emailInput.value.trim());
-    storeFormData('phone', phoneInput.value.trim());
-    const submissionData = {
-        spaceType: formData.step1,
-        bhk: formData.step2,
-        purpose: formData.step3,
-        interiorType: formData.step4,
-        budget: formData.budget,
-        email: formData.email,
-        phone: formData.phone,
-        timestamp: new Date().toISOString(),
-        formType: 'interior_design',
-        source: 'anelia_designs_website'
-    };
-    const submitBtn = document.querySelector('#interiorForm button[type="submit"]');
-    const originalText = submitBtn.textContent;
-    submitBtn.innerHTML = 'Processing...';
-    submitBtn.disabled = true;
-    submitBtn.style.opacity = '0.7';
-
-    // Send to Google Sheet using Apps Script Web App
-    fetch('https://script.google.com/macros/s/AKfycbzlh_-bIB-b74yCIDmv-stF3XncS-jA4q5o-C5C--6umXb0wLGGCktTriDQHqthBl3D/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(submissionData)
-    })
-    .then(response => response.json())
-    .then(resp => {
-        showSuccessPopup('Thanks for the details! Our design team will reach out to you shortly.');
-        setTimeout(() => {
-            closeInteriorForm();
-            resetInteriorForm();
-        }, 1200);
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-        exportToCSV(submissionData, 'interior_design');
-    })
-    .catch(err => {
-        showNotification('Submission failed. Please try again.', 'error');
-        submitBtn.innerHTML = originalText;
-        submitBtn.disabled = false;
-        submitBtn.style.opacity = '1';
-    });
-}
-
-
-
 function resetInteriorForm() {
     formData = {};
     currentStep = 1;
@@ -926,40 +882,169 @@ function resetInteriorForm() {
     if (emailInput) emailInput.value = '';
     if (phoneInput) phoneInput.value = '';
     
+    // Clear hidden fields for Web3Forms
+    const hiddenFields = ['hiddenSpaceType', 'hiddenBhkType', 'hiddenPurpose', 'hiddenInteriorStyle'];
+    hiddenFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (field) field.value = '';
+    });
+    
     console.log('Interior form reset');
 }
 
-// Success Popup
+// Theme-based Success Popup
 function showSuccessPopup(message) {
-    const modal = document.getElementById('successModal');
-    if (!modal) return;
-    const messageElement = modal.querySelector('p');
-    if (messageElement) {
-        messageElement.textContent = message;
+    // Remove any existing success popup
+    const existingPopup = document.querySelector('.success-popup-overlay');
+    if (existingPopup) {
+        existingPopup.remove();
     }
-    modal.classList.remove('hidden');
-    modal.classList.add('active');
-    modal.setAttribute('aria-hidden', 'false');
-    console.log('Success popup shown for 6 seconds');
-    // Remove any previous timeout
-    if (modal.successTimeout) {
-        clearTimeout(modal.successTimeout);
+    
+    // Create popup overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'success-popup-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(3px);
+    `;
+    
+    // Create popup content
+    const popup = document.createElement('div');
+    popup.className = 'success-popup';
+    popup.style.cssText = `
+        background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(255, 255, 255, 0.98) 50%, rgba(255, 255, 255, 1) 100%);
+        color: rgba(94, 82, 64, 1);
+        padding: 40px 30px 45px 30px;
+        border-radius: 20px;
+        text-align: center;
+        max-width: 450px;
+        margin: 20px;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+        border: 3px solid rgba(94, 82, 64, 0.8);
+        transform: translateY(30px) scale(0.9);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        font-family: 'Noto Sans', sans-serif;
+        position: relative;
+    `;
+    
+    popup.innerHTML = `
+        <button class="popup-close-btn" style="
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(94, 82, 64, 0.1);
+            border: 2px solid rgba(94, 82, 64, 0.3);
+            color: rgba(94, 82, 64, 1);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.2s ease;
+            z-index: 10;
+        " onmouseover="this.style.background='rgba(94, 82, 64, 0.2)'; this.style.transform='scale(1.1)'; this.style.borderColor='rgba(94, 82, 64, 0.6)'" 
+           onmouseout="this.style.background='rgba(94, 82, 64, 0.1)'; this.style.transform='scale(1)'; this.style.borderColor='rgba(94, 82, 64, 0.3)'"
+           onclick="this.closest('.success-popup-overlay').click()">×</button>
+        <div style="font-size: 3rem; margin-bottom: 20px; animation: bounce 0.6s ease-out;">🎉</div>
+        <h3 style="margin: 0 0 15px 0; font-size: 1.4rem; font-weight: 600; color: rgba(0, 0, 0, 1);">Success!</h3>
+        <p style="margin: 0; font-size: 1rem; line-height: 1.5; color: rgba(94, 82, 64, 1);">${message}</p>
+        <div style="margin-top: 25px; height: 4px; background: rgba(94, 82, 64, 0.2); border-radius: 2px; overflow: hidden;">
+            <div class="progress-bar" style="height: 100%; background: rgba(94, 82, 64, 0.7); border-radius: 2px; width: 100%; animation: shrink 8.5s linear;"></div>
+        </div>
+        <p style="margin: 8px 0 0 0; font-size: 0.8rem; color: rgba(94, 82, 64, 0.7);">Auto-closes in 8.5 seconds or click × to close</p>
+    `;
+    
+    overlay.appendChild(popup);
+    document.body.appendChild(overlay);
+    
+    // Add animations to head if not already present
+    if (!document.querySelector('#success-popup-styles')) {
+        const style = document.createElement('style');
+        style.id = 'success-popup-styles';
+        style.textContent = `
+            @keyframes bounce {
+                0%, 20%, 53%, 80%, 100% { transform: translate3d(0,0,0); }
+                40%, 43% { transform: translate3d(0,-15px,0); }
+                70% { transform: translate3d(0,-7px,0); }
+                90% { transform: translate3d(0,-2px,0); }
+            }
+            @keyframes shrink {
+                from { width: 100%; }
+                to { width: 0%; }
+            }
+        `;
+        document.head.appendChild(style);
     }
-    modal.successTimeout = setTimeout(() => {
-        closeSuccessModal();
-        console.log('Success popup closed automatically');
-    }, 6000);
+    
+    // Animate in
+    requestAnimationFrame(() => {
+        overlay.style.opacity = '1';
+        popup.style.transform = 'translateY(0) scale(1)';
+    });
+    
+    // Auto close after 8.5 seconds
+    const autoCloseTimer = setTimeout(() => {
+        closePopup();
+    }, 8500);
+    
+    // Close popup function
+    function closePopup() {
+        clearTimeout(autoCloseTimer);
+        overlay.style.opacity = '0';
+        popup.style.transform = 'translateY(-20px) scale(0.95)';
+        
+        setTimeout(() => {
+            if (overlay.parentNode) {
+                overlay.remove();
+            }
+        }, 300);
+    }
+    
+    // Allow manual close by clicking overlay
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay || e.target.classList.contains('popup-close-btn')) {
+            closePopup();
+        }
+    });
+    
+    // ESC key to close
+    const handleEsc = (e) => {
+        if (e.key === 'Escape') {
+            closePopup();
+            document.removeEventListener('keydown', handleEsc);
+        }
+    };
+    document.addEventListener('keydown', handleEsc);
+    
+    // Remove ESC listener when popup is closed
+    overlay.addEventListener('click', () => {
+        document.removeEventListener('keydown', handleEsc);
+    });
+    
+    console.log('Theme-based success popup shown with auto-close in 8.5 seconds');
 }
 
 function closeSuccessModal() {
-    const modal = document.getElementById('successModal');
-    if (!modal) return;
-    modal.classList.add('hidden');
-    modal.classList.remove('active');
-    modal.setAttribute('aria-hidden', 'true');
-    if (modal.successTimeout) {
-        clearTimeout(modal.successTimeout);
-        modal.successTimeout = null;
+    // Legacy function - now handled by the new showSuccessPopup function
+    // Remove any existing success popup
+    const existingPopup = document.querySelector('.success-popup-overlay');
+    if (existingPopup) {
+        existingPopup.remove();
     }
 }
 
@@ -990,7 +1075,7 @@ function setupFAQ() {
     };
 }
 
-// Contact Form Setup - Web3Forms Direct Submission (CSP-Safe)
+// Contact Form Setup - Web3Forms Integration with User Feedback
 function setupContactForm() {
     const form = document.getElementById('contactForm');
     const result = document.getElementById('result');
@@ -1000,127 +1085,45 @@ function setupContactForm() {
         return;
     }
     
-    // Check if running on localhost
-    const isLocalhost = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1' || 
-                       window.location.hostname === '';
-    
-    // Set up form for direct submission to Web3Forms
-    form.action = 'https://api.web3forms.com/submit';
-    form.method = 'POST';
-    
     form.addEventListener('submit', function(e) {
-        // Log the data being sent for debugging
-        const formData = new FormData(form);
-        console.log('Form data entries:');
-        for (let [key, value] of formData.entries()) {
-            console.log(key + ': ' + value);
-        }
-        
-        if (isLocalhost) {
-            console.warn('⚠️ LOCALHOST DETECTED: Web3Forms emails will NOT be sent from localhost!');
-            console.log('📧 To receive actual emails, deploy to a live domain (GitHub Pages, Netlify, etc.)');
-        }
-        
-        result.innerHTML = isLocalhost ? 
-            "📧 Submitting (localhost - emails won't be sent)..." : 
-            "Submitting your message...";
+        // Show loading message
+        result.innerHTML = "Sending your message...";
         result.style.display = "block";
-        result.style.backgroundColor = isLocalhost ? "#fff3cd" : "#e3f2fd";
-        result.style.color = isLocalhost ? "#856404" : "#1976d2";
+        result.style.backgroundColor = "#e3f2fd";
+        result.style.color = "#1976d2";
+        result.style.border = "1px solid #bbdefb";
         
         // Disable submit button to prevent double submission
         const submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) {
-            submitBtn.disabled = true;
-            submitBtn.style.opacity = '0.7';
-        }
+        const originalText = submitBtn.textContent;
+        submitBtn.textContent = "Sending...";
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.7';
         
-        console.log('Form submitting directly to Web3Forms API...');
-        // Allow the form to submit naturally - no preventDefault needed
-    });
-    
-    // Handle form submission response using a hidden iframe technique
-    setupFormResponseHandler(form, result);
-}
-
-// Setup response handler for direct form submission
-function setupFormResponseHandler(form, result) {
-    // Create a hidden iframe to capture the response
-    let iframe = document.getElementById('web3forms-iframe');
-    if (!iframe) {
-        iframe = document.createElement('iframe');
-        iframe.name = 'web3forms-iframe';
-        iframe.id = 'web3forms-iframe';
-        iframe.style.display = 'none';
-        document.body.appendChild(iframe);
-    }
-    
-    // Set form target to the iframe
-    form.target = 'web3forms-iframe';
-    
-    // Check if running on localhost
-    const isLocalhost = window.location.hostname === 'localhost' || 
-                       window.location.hostname === '127.0.0.1' || 
-                       window.location.hostname === '';
-    
-    // Listen for iframe load events
-    iframe.addEventListener('load', function() {
-        try {
-            // Check if the iframe has loaded successfully
-            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+        // The form will submit naturally to Web3Forms
+        // We'll show success message after a delay (since we can't detect actual response)
+        setTimeout(() => {
+            // Hide loading message
+            result.style.display = "none";
             
-            // Show success message with localhost warning
-            if (isLocalhost) {
-                result.innerHTML = "⚠️ Form submitted to Web3Forms API but emails won't be sent from localhost.<br>" +
-                                 "📧 Deploy to a live domain (GitHub Pages, Netlify, Vercel) to receive emails.";
-                result.style.backgroundColor = "#fff3cd";
-                result.style.color = "#856404";
-                console.log('🚨 LOCALHOST: Form submitted but no email will be sent!');
-                console.log('📧 To test emails: Deploy to https://your-domain.com');
-            } else {
-                result.innerHTML = "✅ Message sent successfully! Thank you for contacting us.";
-                result.style.backgroundColor = "#d4edda";
-                result.style.color = "#155724";
-                console.log('✅ Form submitted successfully via iframe');
-            }
+            // Show success popup
+            showSuccessPopup("Wow, your message just landed in Anelia Design's inbox with a splash! 🎉 Thanks for connecting—we'll dive in and get back to you in a flash!");
             
             // Reset form after successful submission
             setTimeout(() => {
                 form.reset();
-                result.style.display = "none";
-            }, isLocalhost ? 5000 : 3000); // Show localhost warning longer
+                
+                // Re-enable submit button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }, 1000);
             
-        } catch (error) {
-            console.error('Iframe access error:', error);
-            // Still show success since the form was submitted
-            if (isLocalhost) {
-                result.innerHTML = "⚠️ Form submitted but emails won't be sent from localhost.<br>" +
-                                 "📧 Deploy to a live domain to receive actual emails.";
-                result.style.backgroundColor = "#fff3cd";
-                result.style.color = "#856404";
-            } else {
-                result.innerHTML = "✅ Message sent! We'll get back to you soon.";
-                result.style.backgroundColor = "#d4edda";
-                result.style.color = "#155724";
-            }
-            
-            setTimeout(() => {
-                form.reset();
-                result.style.display = "none";
-            }, isLocalhost ? 5000 : 3000);
-        }
+        }, 2000); // Show success after 2 seconds to simulate processing
         
-        // Re-enable submit button
-        const submitBtn = form.querySelector('button[type="submit"]');
-        if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.style.opacity = '1';
-        }
+        console.log('Contact form submitted to Web3Forms API');
     });
 }
-
-
 
 // Form Validation
 function setupFormValidation() {

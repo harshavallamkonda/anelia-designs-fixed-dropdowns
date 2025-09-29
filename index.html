@@ -705,7 +705,7 @@
                         <div class="stat-label">Projects Completed</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">8+</div>
+                        <div class="stat-number">5+</div>
                         <div class="stat-label">Years Experience</div>
                     </div>
                     <div class="stat-item">
@@ -886,9 +886,15 @@
                         </div>
                     </div>
                 </div>
-                <form class="contact-form" method="POST" id="contactForm">
+                <form class="contact-form" action="https://api.web3forms.com/submit" method="POST" id="contactForm">
+                    <!-- Web3Forms Access Key -->
                     <input type="hidden" name="access_key" value="11f3b4b9-891a-4ad8-9524-55104f9a689a">
+                    
+                    <!-- Custom Subject Line -->
                     <input type="hidden" name="subject" value="New Contact Form Submission from Anelia Designs Website">
+                    
+                    <!-- Email to receive submissions (your email) -->
+                    <input type="hidden" name="from_name" value="Anelia Designs Contact Form">
                     
                     <div class="form-group">
                         <label for="name" class="form-label">Full Name *</label>
@@ -917,10 +923,15 @@
                         <textarea id="message" name="message" class="form-control" rows="5" required></textarea>
                     </div>
                     
+                    <!-- Honeypot Spam Protection -->
                     <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                    
+                    <!-- Success Redirect (optional) -->
+                    <input type="hidden" name="redirect" value="https://web3forms.com/success">
                     
                     <button type="submit" class="btn btn--primary btn--full-width">Send Message</button>
                     
+                    <!-- Result message will be shown here -->
                     <div id="result" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;"></div>
                 </form>
             </div>
@@ -986,7 +997,17 @@
             </div>
             <div class="modal-body">
                 <p class="lead-subtitle">Claim your complimentary design session now!</p>
-                <form id="leadCaptureForm" class="lead-capture-form">
+                <form id="leadCaptureForm" class="lead-capture-form" action="https://api.web3forms.com/submit" method="POST">
+                    <!-- Web3Forms Access Key -->
+                    <input type="hidden" name="access_key" value="11f3b4b9-891a-4ad8-9524-55104f9a689a">
+                    
+                    <!-- Custom Subject Line -->
+                    <input type="hidden" name="subject" value="New Lead Generated for Anelia Designs">
+                    
+                    <!-- Form Type Identifier -->
+                    <input type="hidden" name="form_type" value="lead_capture">
+                    <input type="hidden" name="from_name" value="Anelia Designs Lead Capture">
+                    
                     <div class="form-group">
                         <label for="leadName" class="form-label">Full Name *</label>
                         <input type="text" id="leadName" name="name" class="form-control" required>
@@ -1007,7 +1028,14 @@
                         <label for="leadSize" class="form-label">Plot Size *</label>
                         <input type="text" id="leadSize" name="plotSize" class="form-control" required placeholder="e.g., 30x40, 2400 sq ft">
                     </div>
+                    
+                    <!-- Honeypot Spam Protection -->
+                    <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                    
                     <button type="submit" class="btn btn--primary btn--full-width">Submit</button>
+                    
+                    <!-- Result message will be shown here -->
+                    <div id="leadResult" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;"></div>
                 </form>
             </div>
         </div>
@@ -1028,7 +1056,23 @@
                     <span class="progress-text" id="progressText">Step 1 of 5</span>
                 </div>
                 
-                <form id="interiorForm" class="multi-step-form">
+                <form id="interiorForm" class="multi-step-form" action="https://api.web3forms.com/submit" method="POST">
+                    <!-- Web3Forms Access Key -->
+                    <input type="hidden" name="access_key" value="11f3b4b9-891a-4ad8-9524-55104f9a689a">
+                    
+                    <!-- Custom Subject Line -->
+                    <input type="hidden" name="subject" value="New Interior Design Consultation Request from Anelia Designs Website">
+                    
+                    <!-- Form Type Identifier -->
+                    <input type="hidden" name="form_type" value="interior_design">
+                    <input type="hidden" name="from_name" value="Anelia Designs Interior Form">
+                    
+                    <!-- Hidden fields to store step selections -->
+                    <input type="hidden" name="space_type" id="hiddenSpaceType">
+                    <input type="hidden" name="bhk_type" id="hiddenBhkType">  
+                    <input type="hidden" name="purpose" id="hiddenPurpose">
+                    <input type="hidden" name="interior_style" id="hiddenInteriorStyle">
+                    
                     <!-- Step 1: Space Type -->
                     <div class="form-step active" data-step="1">
                         <h3>What type of space are you designing?</h3>
@@ -1119,7 +1163,14 @@
                             <label for="interiorPhone" class="form-label">Phone Number *</label>
                             <input type="tel" id="interiorPhone" name="phone" class="form-control" required inputmode="tel">
                         </div>
+                        
+                        <!-- Honeypot Spam Protection -->
+                        <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+                        
                         <button type="submit" class="btn btn--primary btn--full-width">Get Your Quote</button>
+                        
+                        <!-- Result message will be shown here -->
+                        <div id="interiorResult" style="margin-top: 15px; padding: 10px; border-radius: 5px; display: none;"></div>
                     </div>
                 </form>
             </div>
