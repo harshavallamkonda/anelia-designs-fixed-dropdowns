@@ -1458,10 +1458,12 @@ h6 { font-size: 1.1rem; }
     scroll-behavior: smooth;
     scrollbar-width: thin;
     scrollbar-color: rgba(0,0,0,0.2) transparent;
-    /* Enable hardware acceleration for better mobile performance */
+    /* Enable hardware acceleration */
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     will-change: scroll-position;
+    /* Enable scroll snapping */
+    scroll-snap-type: x mandatory;
 }
 
 .projects-carousel::-webkit-scrollbar {
@@ -1540,6 +1542,8 @@ h6 { font-size: 1.1rem; }
     -webkit-transform: translateZ(0);
     transform: translateZ(0);
     /* Enable GPU acceleration for hover/drag */
+    /* Enable scroll snapping */
+    scroll-snap-align: start;
 }
 
 .project-card:hover {
@@ -1655,6 +1659,7 @@ h6 { font-size: 1.1rem; }
 @media (max-width: 768px) {
     .project-card {
         flex: 0 0 250px;
+        scroll-snap-align: start;
     }
     
     .project-images {
@@ -1666,11 +1671,11 @@ h6 { font-size: 1.1rem; }
     }
     
     .projects-carousel {
-        /* Prioritize native touch scrolling on mobile */
+        /* Enhanced mobile scrolling */
         -webkit-overflow-scrolling: touch;
         scrollbar-width: none;
         -ms-overflow-style: none;
-        scroll-snap-type: x proximity;
+        scroll-snap-type: x mandatory;
         cursor: default;
     }
     
@@ -1683,8 +1688,7 @@ h6 { font-size: 1.1rem; }
     }
     
     .projects-track {
-        /* Adjusted animation duration for smooth infinite scroll on mobile */
-        animation: autoScrollMobile 240s linear infinite;
+        /* JavaScript-controlled animation */
         gap: 20px;
         will-change: transform;
         backface-visibility: hidden;

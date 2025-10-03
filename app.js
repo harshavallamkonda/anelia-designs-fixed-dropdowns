@@ -527,29 +527,11 @@ function setupProjectCarousels() {
     });
 }
 
-// Projects Auto-Scroll Setup
+// Projects Auto-Scroll Setup (now handled by setupProjectsCarouselInteraction)
 function setupProjectsAutoScroll() {
-    const projectsTrack = document.getElementById('projectsTrack');
-    if (!projectsTrack) return;
-    
-    // Cards are already duplicated in renderProjects for infinite scroll
-    // Just set up the animation state
-    projectsTrack.style.animationPlayState = 'running';
-    projectsTrack.style.willChange = 'transform';
-    
-    // Add hover pause/resume functionality
-    projectsTrack.addEventListener('mouseenter', () => {
-        projectsTrack.style.animationPlayState = 'paused';
-    });
-    
-    projectsTrack.addEventListener('mouseleave', () => {
-        projectsTrack.style.animationPlayState = 'running';
-    });
-    
-    // Ensure seamless looping - the CSS animation handles this automatically
-    // by moving exactly -50% which brings us back to the start due to duplicated content
-    
-    console.log('Projects infinite scroll initialized');
+    // Auto-scroll is now handled by the advanced carousel system
+    // This function is kept for compatibility but functionality moved to setupProjectsCarouselInteraction
+    console.log('Auto-scroll handled by advanced carousel system');
 }
 
 // Lead Capture Popup
@@ -1739,159 +1721,211 @@ function renderProjects() {
     // Carousel navigation removed - using auto-scroll only
 }
 
-// Setup projects carousel interaction with manual scroll/drag functionality
+// Setup advanced infinite carousel with continuous auto-sliding and manual controls
 function setupProjectsCarouselInteraction() {
     const track = document.getElementById('projectsTrack');
     const carousel = track?.parentElement;
     if (!track || !carousel) return;
     
-    // Detect if we're on mobile
-    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    // Carousel state
+    let isUserInteracting = false;
+    let isDragging = false;
+    let startX = 0;
+    let scrollLeft = 0;
+    let animationId = null;
+    let autoScrollSpeed = 0.5; // pixels per frame
     
-    let localIsDragging = false;
-    let localStartX = 0;
-    let localScrollLeft = 0;
-    let velocity = 0;
-    let lastX = 0;
-    let lastTime = 0;
+    // Get card width for calculations
+    const getCardWidth = () => {
+        const firstCard = track.querySelector('.project-card');
+        return firstCard ? firstCard.offsetWidth + 25 : 375; // 25px gap
+    };
     
-    // On mobile, prioritize native touch scrolling
-    if (isMobile) {
-        // Enable smooth native scrolling on mobile
-        carousel.style.overflowX = 'auto';
-        carousel.style.webkitOverflowScrolling = 'touch';
-        carousel.style.scrollBehavior = 'smooth';
+    // Get total width of original cards (before duplication)
+    const getOriginalWidth = () => {
+        const cards = track.querySelectorAll('.project-card');
+        return (cards.length / 2) * getCardWidth(); // Divided by 2 because cards are duplicated
+    };
+    
+    // Initialize infinite scroll setup
+    function initializeInfiniteScroll() {
+        // Disable CSS animation in favor of JavaScript control
+        track.style.animation = 'none';
         
-        // Simple touch event handling for mobile
-        let startScrollLeft = 0;
-        let startTouchX = 0;
+        // Set initial position with small offset to enable left scrolling
+        setTimeout(() => {
+            carousel.scrollLeft = 50; // Start with small offset to allow left scrolling
+        }, 100);
         
-        carousel.addEventListener('touchstart', (e) => {
-            startTouchX = e.touches[0].clientX;
-            startScrollLeft = carousel.scrollLeft;
-        }, { passive: true });
-        
-        // Let native scrolling handle the rest on mobile
-        console.log('Mobile carousel setup: Using native touch scrolling');
-        return;
+        // Start auto-scroll animation
+        startAutoScroll();
     }
     
-    // Mouse events
-    track.addEventListener('mousedown', (e) => {
-        localIsDragging = true;
+    // Continuous auto-scroll function
+    function startAutoScroll() {
+        function animate() {
+            if (!isUserInteracting) {
+                carousel.scrollLeft += autoScrollSpeed;
+                
+                // Check for seamless loop reset (right edge)
+                const maxScroll = getOriginalWidth();
+                if (carousel.scrollLeft >= maxScroll - 10) {
+                    carousel.scrollLeft = 50; // Reset to beginning with offset
+                }
+            }
+            
+            animationId = requestAnimationFrame(animate);
+        }
+        animate();
+    }
+    
+    // Handle seamless infinite scrolling during manual interaction
+    function handleInfiniteLoop() {
+        const maxScroll = getOriginalWidth();
+        const currentScroll = carousel.scrollLeft;
+        const buffer = 10; // Small buffer to prevent flickering
+        
+        // If scrolled past original content (right edge), jump to beginning
+        if (currentScroll >= maxScroll - buffer) {
+            carousel.scrollLeft = buffer;
+        }
+        // If scrolled before beginning (left edge), jump to end of original content
+        else if (currentScroll <= buffer) {
+            carousel.scrollLeft = maxScroll - buffer;
+        }
+    }
+    
+    // Mouse drag events
+    carousel.addEventListener('mousedown', (e) => {
         isDragging = true;
-        localStartX = e.pageX - track.offsetLeft;
-        localScrollLeft = track.scrollLeft;
-        track.classList.add('dragging');
-        track.style.cursor = 'grabbing';
-        lastX = e.pageX;
-        lastTime = Date.now();
+        isUserInteracting = true;
+        startX = e.pageX - carousel.offsetLeft;
+        scrollLeft = carousel.scrollLeft;
+        carousel.style.cursor = 'grabbing';
+        carousel.style.scrollBehavior = 'auto';
         e.preventDefault();
     });
     
-    track.addEventListener('mouseleave', () => {
-        if (localIsDragging) {
-            localIsDragging = false;
+    carousel.addEventListener('mouseleave', () => {
+        if (isDragging) {
             isDragging = false;
-            track.classList.remove('dragging');
-            track.style.cursor = 'grab';
+            isUserInteracting = false;
+            carousel.style.cursor = 'grab';
         }
     });
     
-    track.addEventListener('mouseup', () => {
-        if (localIsDragging) {
-            localIsDragging = false;
+    carousel.addEventListener('mouseup', () => {
+        if (isDragging) {
             isDragging = false;
-            track.classList.remove('dragging');
-            track.style.cursor = 'grab';
+            carousel.style.cursor = 'grab';
+            carousel.style.scrollBehavior = 'smooth';
+            
+            // Handle infinite loop immediately, then allow brief interaction period
+            handleInfiniteLoop();
+            
+            setTimeout(() => {
+                isUserInteracting = false;
+            }, 100);
         }
     });
     
-    track.addEventListener('mousemove', (e) => {
-        if (!localIsDragging) return;
+    carousel.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
         e.preventDefault();
-        
-        const currentTime = Date.now();
-        const deltaTime = currentTime - lastTime;
-        const deltaX = e.pageX - lastX;
-        
-        if (deltaTime > 0) {
-            velocity = deltaX / deltaTime;
-        }
-        
-        const x = e.pageX - track.offsetLeft;
-        const walk = (x - localStartX) * 2;
-        track.scrollLeft = localScrollLeft - walk;
-        
-        lastX = e.pageX;
-        lastTime = currentTime;
+        const x = e.pageX - carousel.offsetLeft;
+        const walk = (x - startX) * 1.5;
+        carousel.scrollLeft = scrollLeft - walk;
+        handleInfiniteLoop();
     });
     
-    // Touch events for mobile - Use carousel container for better touch handling
+    // Touch events for mobile
     carousel.addEventListener('touchstart', (e) => {
-        localIsDragging = true;
         isDragging = true;
+        isUserInteracting = true;
         const touch = e.touches[0];
-        localStartX = touch.pageX;
-        localScrollLeft = carousel.scrollLeft;
-        track.classList.add('dragging');
-        lastX = touch.pageX;
-        lastTime = Date.now();
+        startX = touch.pageX;
+        scrollLeft = carousel.scrollLeft;
+        carousel.style.scrollBehavior = 'auto';
     }, { passive: true });
     
     carousel.addEventListener('touchend', () => {
-        if (localIsDragging) {
-            localIsDragging = false;
+        if (isDragging) {
             isDragging = false;
-            track.classList.remove('dragging');
+            carousel.style.scrollBehavior = 'smooth';
+            
+            // Handle infinite loop immediately, then allow brief interaction period
+            handleInfiniteLoop();
+            
+            setTimeout(() => {
+                isUserInteracting = false;
+            }, 100);
         }
     }, { passive: true });
     
     carousel.addEventListener('touchmove', (e) => {
-        if (!localIsDragging) return;
-        
-        const currentTime = Date.now();
+        if (!isDragging) return;
         const touch = e.touches[0];
-        const deltaTime = currentTime - lastTime;
-        const deltaX = touch.pageX - lastX;
-        
-        if (deltaTime > 0) {
-            velocity = deltaX / deltaTime;
-        }
-        
-        // Use native scrolling on mobile
-        const walk = lastX - touch.pageX;
-        carousel.scrollLeft = localScrollLeft + walk;
-        
-        lastX = touch.pageX;
-        lastTime = currentTime;
+        const walk = startX - touch.pageX;
+        carousel.scrollLeft = scrollLeft + walk;
+        handleInfiniteLoop();
     }, { passive: true });
     
     // Wheel events for horizontal scrolling
     carousel.addEventListener('wheel', (e) => {
-        // Convert vertical scroll to horizontal scroll
         if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
             e.preventDefault();
-            carousel.scrollLeft += e.deltaY;
+            isUserInteracting = true;
+            carousel.scrollLeft += e.deltaY * 0.5;
+            handleInfiniteLoop();
+            
+            // Brief pause in user interaction detection
+            setTimeout(() => {
+                isUserInteracting = false;
+            }, 100);
         }
     }, { passive: false });
     
     // Keyboard navigation
-    track.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowLeft') {
+    carousel.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
             e.preventDefault();
-            track.scrollLeft -= 350;
-        } else if (e.key === 'ArrowRight') {
-            e.preventDefault();
-            track.scrollLeft += 350;
+            isUserInteracting = true;
+            const cardWidth = getCardWidth();
+            const direction = e.key === 'ArrowLeft' ? -1 : 1;
+            carousel.scrollLeft += cardWidth * direction;
+            handleInfiniteLoop();
+            
+            setTimeout(() => {
+                isUserInteracting = false;
+            }, 500);
         }
     });
     
-    // Make track focusable for keyboard navigation
-    track.setAttribute('tabindex', '0');
-    track.style.cursor = 'grab';
+    // Handle scroll events for infinite loop
+    let scrollTimeout;
+    carousel.addEventListener('scroll', () => {
+        // Clear previous timeout to debounce rapid scroll events
+        clearTimeout(scrollTimeout);
+        
+        // Handle infinite loop immediately for smooth experience
+        if (!isDragging) {
+            handleInfiniteLoop();
+        }
+        
+        // Additional check after scroll settles
+        scrollTimeout = setTimeout(() => {
+            handleInfiniteLoop();
+        }, 50);
+    });
     
-    console.log('Projects carousel manual interaction setup complete');
+    // Make carousel focusable for keyboard navigation
+    carousel.setAttribute('tabindex', '0');
+    carousel.style.cursor = 'grab';
+    
+    // Initialize the infinite scroll
+    initializeInfiniteScroll();
+    
+    console.log('Advanced infinite carousel initialized');
 }
 
 // Setup Carousel Manual Navigation
