@@ -115,6 +115,23 @@
     
     <link rel="stylesheet" href="style.css">
     
+    <!-- Add Google Fonts for Raleway & PT Serif -->
+    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      html, body {
+        font-family: 'PT Serif', serif;
+      }
+      h1, h2, h3, h4, h5, h6, .logo-text, .nav-logo, .section-header h2 {
+        font-family: 'Raleway', 'PT Serif', serif;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+      }
+      /* Force all other elements to use only these two fonts */
+      * {
+        font-family: inherit !important;
+      }
+    </style>
+    
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
 </head>
