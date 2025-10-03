@@ -1871,17 +1871,31 @@ function setupProjectsCarouselInteraction() {
     }, { passive: true });
     
     // Wheel events for horizontal scrolling
+    // Only intercept the wheel when there's a clear horizontal scroll intent
+    // (deltaX > deltaY) or the user holds Shift (common horizontal scroll modifier).
     carousel.addEventListener('wheel', (e) => {
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        const absDeltaX = Math.abs(e.deltaX);
+        const absDeltaY = Math.abs(e.deltaY);
+
+        // If user intentionally scrolls horizontally or holds Shift, handle it here
+        const shouldHandleHorizontally = (absDeltaX > absDeltaY) || e.shiftKey;
+
+        if (shouldHandleHorizontally) {
+            // Prevent the default vertical scroll only when we're actively handling horizontal movement
             e.preventDefault();
             isUserInteracting = true;
-            carousel.scrollLeft += e.deltaY * 0.5;
+            // Use deltaX when available, otherwise map deltaY to horizontal movement
+            const horiz = e.deltaX !== 0 ? e.deltaX : e.deltaY;
+            carousel.scrollLeft += horiz * 0.5;
             handleInfiniteLoop();
-            
+
             // Brief pause in user interaction detection
             setTimeout(() => {
                 isUserInteracting = false;
             }, 100);
+        } else {
+            // Let vertical scrolling bubble up to the page normally
+            // Do not call preventDefault
         }
     }, { passive: false });
     

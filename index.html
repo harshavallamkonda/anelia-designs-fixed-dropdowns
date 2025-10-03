@@ -81,9 +81,9 @@
         "openingHours": "Mo-Sa 09:00-18:00"
     }
     </script>
-    
-    <title>Anelia Designs - Exceptional Spaces, Inspired Living | Interior Design & Construction Bangalore & Dubai</title>
-    
+
+    <title>Anelia Design Studio - Exceptional Spaces, Inspired Living | Interior Design & Construction</title>
+
     <!-- Performance & Security Optimizations -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; media-src 'self'; connect-src 'self' https://api.web3forms.com; frame-src https://www.google.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' https://api.web3forms.com;"
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
@@ -117,20 +117,37 @@
     
     <!-- Add Google Fonts for Raleway & PT Serif -->
     <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@400;700&family=PT+Serif:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-      html, body {
-        font-family: 'PT Serif', serif;
-      }
-      h1, h2, h3, h4, h5, h6, .logo-text, .nav-logo, .section-header h2 {
-        font-family: 'Raleway', 'PT Serif', serif;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-      }
-      /* Force all other elements to use only these two fonts */
-      * {
-        font-family: inherit !important;
-      }
-    </style>
+        <style>
+            html, body {
+                font-family: 'PT Serif', serif;
+            }
+            h1, h2, h3, h4, h5, h6, .logo-text, .nav-logo, .section-header h2 {
+                font-family: 'Raleway', 'PT Serif', serif;
+                font-weight: 700;
+                letter-spacing: 0.5px;
+            }
+            /* Force all other elements to use only these two fonts */
+            * {
+                font-family: inherit !important;
+            }
+            /* Logo responsive adjustments: allow wrapping and ensure visibility */
+            .logo-container { display:flex; align-items:center; gap:16px; max-width:420px; min-width:0; }
+            .logo-text h2 { font-size:1.25rem; margin:0; line-height:1.1; white-space:normal; word-break:break-word; }
+            @media (max-width: 640px) {
+                .logo-container { max-width:260px; }
+                .logo-text h2 { font-size:1rem; }
+            }
+        </style>
+            <style>
+                /* Optional local @font-face for Zalando Sans SemiExpanded; place font file at /fonts/ if available */
+                @font-face {
+                    font-family: 'Zalando Sans SemiExpanded';
+                    src: url('fonts/ZalandoSans-SemiExpanded.woff2') format('woff2');
+                    font-weight: 400 700;
+                    font-style: normal;
+                    font-display: swap;
+                }
+            </style>
     
     <!-- Favicon -->
     <link rel="icon" type="image/jpeg" href="assets/logo.jpg">
@@ -142,10 +159,10 @@
     <nav class="navbar" role="navigation" aria-label="Main Navigation">
         <div class="nav-container">
             <div class="nav-logo">
-                <div class="logo-container" style="display:flex;align-items:center;gap:16px;max-width:320px;overflow:hidden;">
+                <div class="logo-container" style="display:flex;align-items:center;gap:16px;max-width:420px;min-width:0;">
                     <img src="assets/logo.jpg" alt="Anelia Designs Logo" style="height:64px;width:auto;max-width:90px;object-fit:contain;display:block;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,0.04);background:#fff;" />
                     <div class="logo-text" style="flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;">
-                        <h2 style="font-size:1.5rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0;line-height:1.1;">Anelia Designs</h2>
+                        <h2 style="font-size:1.25rem;margin:0;line-height:1.1;font-family:'Zalando Sans SemiExpanded';">Anelia Designs | Akshaya Constructions</h2>
                         <!--<span class="nav-tagline" style="font-size:1rem;white-space:normal;overflow:visible;text-overflow:clip;line-height:1.2;max-width:210px;display:block;">Where ideas dress up and go out in style</span>-->
                     </div>
                 </div>
@@ -192,8 +209,8 @@
         
         <div class="hero-overlay" style="position:absolute;top:0;left:0;width:100vw;height:100vh;z-index:3;background:linear-gradient(135deg,rgba(30,30,30,0.55) 0%,rgba(0,0,0,0.35) 100%);"></div>
         <div class="hero-content fade-in-text" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:4;text-align:center;width:100%;color:#fff;pointer-events:none;">
-            <h1 class="hero-title" style="color:#fff;font-weight:600;letter-spacing:0.5px;">Exceptional Spaces, Inspired Living</h1>
-            <p class="hero-subtitle" style="color:#fff;font-weight:600;letter-spacing:0.2px;">Transform your space with our premium construction and interior design services. Where creativity meets craftsmanship in Bangalore and Dubai.</p>
+            <h1 class="hero-title" style="color:#fff;font-weight:600;letter-spacing:0.5px;">Unique Spaces, Timeless Living</h1>
+            <p class="hero-subtitle" style="color:#fff;font-weight:600;letter-spacing:0.2px;font-size:1.38rem;">Transforming visions into reality with tailored construction and design Where detail meets perfection.</p>
         </div>
     </section>
 
@@ -246,7 +263,7 @@
                 <article class="package-card">
                     <div class="package-header">
                         <h3 class="package-name">Standard Package</h3>
-                        <div class="package-price">2,030/sqft Inc.GST</div>
+                        <div class="package-price">₹1,980/sqft</div>
                     </div>
                     <div class="package-content">
                         <div class="package-category">
@@ -373,7 +390,7 @@
                 <article class="package-card package-featured">
                     <div class="package-header">
                         <h3 class="package-name">Premium Package</h3>
-                        <div class="package-price">₹2,350/sqft Inc.GST</div>
+                        <div class="package-price">₹2,350/sqft</div>
                         <span class="package-badge">Most Popular</span>
                     </div>
                     <div class="package-content">
@@ -503,7 +520,7 @@
                 <article class="package-card">
                     <div class="package-header">
                         <h3 class="package-name">Luxury Package</h3>
-                        <div class="package-price">₹2,685/sqft Inc.GST</div>
+                        <div class="package-price">₹2,685/sqft</div>
                     </div>
                     <div class="package-content">
                         <div class="package-category">
@@ -749,15 +766,15 @@
                 </div>
                 <div class="about-stats">
                     <div class="stat-item">
-                        <div class="stat-number">15+</div>
+                        <div class="stat-number">200+</div>
                         <div class="stat-label">Projects Completed</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">5+</div>
+                        <div class="stat-number">15+</div>
                         <div class="stat-label">Years Experience</div>
                     </div>
                     <div class="stat-item">
-                        <div class="stat-number">98%</div>
+                        <div class="stat-number">100%</div>
                         <div class="stat-label">Client Satisfaction</div>
                     </div>
                     <div class="stat-item">
@@ -1032,7 +1049,7 @@
     </footer>
 
     <!-- WhatsApp Float Button -->
-    <a href="https://wa.me/919986502345" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contact us on WhatsApp">
+    <a href="https://wa.me/918431111589" class="whatsapp-float" target="_blank" rel="noopener" aria-label="Contact us on WhatsApp">
         <span class="whatsapp-icon">💬</span>
     </a>
 
@@ -1075,6 +1092,24 @@
                     <div class="form-group">
                         <label for="leadSize" class="form-label">Plot Size *</label>
                         <input type="text" id="leadSize" name="plotSize" class="form-control" required placeholder="e.g., 30x40, 2400 sq ft">
+                    </div>
+                    
+                    <!-- Services interest (multiple choice) -->
+                    <div class="form-group">
+                        <fieldset>
+                            <legend class="form-label">Which type(s) of service do you need? * <span style="font-weight:400;font-size:0.95rem;color:var(--text-light);">(Select all that apply)</span></legend>
+                            <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+                                <label style="display:flex;align-items:center;gap:8px;">
+                                    <input type="checkbox" name="services[]" value="Construction"> <span>Construction</span>
+                                </label>
+                                <label style="display:flex;align-items:center;gap:8px;">
+                                    <input type="checkbox" name="services[]" value="Interior Design"> <span>Interior Design</span>
+                                </label>
+                                <label style="display:flex;align-items:center;gap:8px;">
+                                    <input type="checkbox" name="services[]" value="Consultation"> <span>Consultation</span>
+                                </label>
+                            </div>
+                        </fieldset>
                     </div>
                     
                     <!-- Honeypot Spam Protection -->
