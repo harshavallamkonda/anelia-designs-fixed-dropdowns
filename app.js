@@ -532,15 +532,12 @@ function setupProjectsAutoScroll() {
     const projectsTrack = document.getElementById('projectsTrack');
     if (!projectsTrack) return;
     
-    const projects = Array.from(projectsTrack.children);
-    projects.forEach(project => {
-        const clone = project.cloneNode(true);
-        projectsTrack.appendChild(clone);
-    });
-    
+    // Cards are already duplicated in renderProjects for infinite scroll
+    // Just set up the animation state
     projectsTrack.style.animationPlayState = 'running';
     projectsTrack.style.willChange = 'transform';
     
+    // Add hover pause/resume functionality
     projectsTrack.addEventListener('mouseenter', () => {
         projectsTrack.style.animationPlayState = 'paused';
     });
@@ -549,7 +546,10 @@ function setupProjectsAutoScroll() {
         projectsTrack.style.animationPlayState = 'running';
     });
     
-    console.log('Projects auto-scroll initialized');
+    // Ensure seamless looping - the CSS animation handles this automatically
+    // by moving exactly -50% which brings us back to the start due to duplicated content
+    
+    console.log('Projects infinite scroll initialized');
 }
 
 // Lead Capture Popup
@@ -1669,7 +1669,11 @@ function renderProjects() {
     
     // Filter out 'Manoj Executive Residence' by id before rendering
     const filteredProjects = projectsData.filter(project => project.id !== 'manoj');
-    filteredProjects.forEach((project, projectIndex) => {
+    
+    // Create cards twice for seamless infinite scrolling
+    const allProjects = [...filteredProjects, ...filteredProjects];
+    
+    allProjects.forEach((project, projectIndex) => {
         const card = document.createElement('article');
         card.className = 'project-card';
         card.setAttribute('data-project-id', project.id);
@@ -1741,12 +1745,36 @@ function setupProjectsCarouselInteraction() {
     const carousel = track?.parentElement;
     if (!track || !carousel) return;
     
+    // Detect if we're on mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
     let localIsDragging = false;
     let localStartX = 0;
     let localScrollLeft = 0;
     let velocity = 0;
     let lastX = 0;
     let lastTime = 0;
+    
+    // On mobile, prioritize native touch scrolling
+    if (isMobile) {
+        // Enable smooth native scrolling on mobile
+        carousel.style.overflowX = 'auto';
+        carousel.style.webkitOverflowScrolling = 'touch';
+        carousel.style.scrollBehavior = 'smooth';
+        
+        // Simple touch event handling for mobile
+        let startScrollLeft = 0;
+        let startTouchX = 0;
+        
+        carousel.addEventListener('touchstart', (e) => {
+            startTouchX = e.touches[0].clientX;
+            startScrollLeft = carousel.scrollLeft;
+        }, { passive: true });
+        
+        // Let native scrolling handle the rest on mobile
+        console.log('Mobile carousel setup: Using native touch scrolling');
+        return;
+    }
     
     // Mouse events
     track.addEventListener('mousedown', (e) => {
@@ -1799,19 +1827,19 @@ function setupProjectsCarouselInteraction() {
         lastTime = currentTime;
     });
     
-    // Touch events for mobile
-    track.addEventListener('touchstart', (e) => {
+    // Touch events for mobile - Use carousel container for better touch handling
+    carousel.addEventListener('touchstart', (e) => {
         localIsDragging = true;
         isDragging = true;
         const touch = e.touches[0];
-        localStartX = touch.pageX - track.offsetLeft;
-        localScrollLeft = track.scrollLeft;
+        localStartX = touch.pageX;
+        localScrollLeft = carousel.scrollLeft;
         track.classList.add('dragging');
         lastX = touch.pageX;
         lastTime = Date.now();
-    }, { passive: false });
+    }, { passive: true });
     
-    track.addEventListener('touchend', () => {
+    carousel.addEventListener('touchend', () => {
         if (localIsDragging) {
             localIsDragging = false;
             isDragging = false;
@@ -1819,9 +1847,8 @@ function setupProjectsCarouselInteraction() {
         }
     }, { passive: true });
     
-    track.addEventListener('touchmove', (e) => {
+    carousel.addEventListener('touchmove', (e) => {
         if (!localIsDragging) return;
-        e.preventDefault();
         
         const currentTime = Date.now();
         const touch = e.touches[0];
@@ -1832,13 +1859,13 @@ function setupProjectsCarouselInteraction() {
             velocity = deltaX / deltaTime;
         }
         
-        const x = touch.pageX - track.offsetLeft;
-        const walk = (x - localStartX) * 2;
-        track.scrollLeft = localScrollLeft - walk;
+        // Use native scrolling on mobile
+        const walk = lastX - touch.pageX;
+        carousel.scrollLeft = localScrollLeft + walk;
         
         lastX = touch.pageX;
         lastTime = currentTime;
-    }, { passive: false });
+    }, { passive: true });
     
     // Wheel events for horizontal scrolling
     carousel.addEventListener('wheel', (e) => {

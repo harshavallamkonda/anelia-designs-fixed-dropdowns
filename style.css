@@ -1458,6 +1458,10 @@ h6 { font-size: 1.1rem; }
     scroll-behavior: smooth;
     scrollbar-width: thin;
     scrollbar-color: rgba(0,0,0,0.2) transparent;
+    /* Enable hardware acceleration for better mobile performance */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: scroll-position;
 }
 
 .projects-carousel::-webkit-scrollbar {
@@ -1662,33 +1666,49 @@ h6 { font-size: 1.1rem; }
     }
     
     .projects-carousel {
-        /* Ensure smooth touch scrolling on mobile */
+        /* Prioritize native touch scrolling on mobile */
         -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* Hide scrollbar on mobile Firefox */
-        -ms-overflow-style: none; /* Hide scrollbar on IE/Edge */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        scroll-snap-type: x proximity;
+        cursor: default;
     }
     
     .projects-carousel::-webkit-scrollbar {
-        display: none; /* Hide scrollbar on mobile WebKit */
+        display: none;
+    }
+    
+    .projects-carousel:active {
+        cursor: default;
     }
     
     .projects-track {
-        animation: autoScrollMobile 57s linear infinite;
+        /* Adjusted animation duration for smooth infinite scroll on mobile */
+        animation: autoScrollMobile 240s linear infinite;
         gap: 20px;
         will-change: transform;
         backface-visibility: hidden;
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
-        /* Better touch interaction */
         touch-action: pan-x;
+        cursor: default;
     }
     
+    .projects-track:active {
+        cursor: default;
+    }
+    
+    .project-card {
+        scroll-snap-align: start;
+    }
+    
+    /* Mobile infinite scroll animation - moves exactly 50% to loop seamlessly */
     @keyframes autoScrollMobile {
         0% {
             transform: translateX(0);
         }
         100% {
-            transform: translateX(-70%);
+            transform: translateX(-50%);
         }
     }
     
