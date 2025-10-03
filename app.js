@@ -1550,6 +1550,13 @@ let currentModalImageIndex = 0;
 let projectAutoAdvanceTimers = [];
 let projectCarouselTimer = null;
 
+// Manual interaction state
+let isUserInteracting = false;
+let userInteractionTimer = null;
+let isDragging = false;
+let startX = 0;
+let scrollLeft = 0;
+
 // Setup enhanced projects functionality
 function setupEnhancedProjects() {
     loadProjectsFromFolders()
@@ -1728,43 +1735,52 @@ function renderProjects() {
     // Carousel navigation removed - using auto-scroll only
 }
 
-// Setup projects carousel interaction (touch/swipe support)
+// Setup projects carousel interaction with manual scroll/drag functionality
 function setupProjectsCarouselInteraction() {
     const track = document.getElementById('projectsTrack');
-    if (!track) return;
+    const carousel = track?.parentElement;
+    if (!track || !carousel) return;
     
-    let isDragging = false;
-    let startX = 0;
-    let scrollLeft = 0;
+    let localIsDragging = false;
+    let localStartX = 0;
+    let localScrollLeft = 0;
     let velocity = 0;
     let lastX = 0;
     let lastTime = 0;
     
     // Mouse events
     track.addEventListener('mousedown', (e) => {
+        localIsDragging = true;
         isDragging = true;
-        startX = e.pageX - track.offsetLeft;
-        scrollLeft = track.scrollLeft;
+        localStartX = e.pageX - track.offsetLeft;
+        localScrollLeft = track.scrollLeft;
         track.classList.add('dragging');
-        track.style.animationPlayState = 'paused';
+        track.style.cursor = 'grabbing';
         lastX = e.pageX;
         lastTime = Date.now();
+        e.preventDefault();
     });
     
     track.addEventListener('mouseleave', () => {
-        isDragging = false;
-        track.classList.remove('dragging');
-        track.style.animationPlayState = 'running';
+        if (localIsDragging) {
+            localIsDragging = false;
+            isDragging = false;
+            track.classList.remove('dragging');
+            track.style.cursor = 'grab';
+        }
     });
     
     track.addEventListener('mouseup', () => {
-        isDragging = false;
-        track.classList.remove('dragging');
-        track.style.animationPlayState = 'running';
+        if (localIsDragging) {
+            localIsDragging = false;
+            isDragging = false;
+            track.classList.remove('dragging');
+            track.style.cursor = 'grab';
+        }
     });
     
     track.addEventListener('mousemove', (e) => {
-        if (!isDragging) return;
+        if (!localIsDragging) return;
         e.preventDefault();
         
         const currentTime = Date.now();
@@ -1776,8 +1792,8 @@ function setupProjectsCarouselInteraction() {
         }
         
         const x = e.pageX - track.offsetLeft;
-        const walk = (x - startX) * 2;
-        track.scrollLeft = scrollLeft - walk;
+        const walk = (x - localStartX) * 2;
+        track.scrollLeft = localScrollLeft - walk;
         
         lastX = e.pageX;
         lastTime = currentTime;
@@ -1785,24 +1801,27 @@ function setupProjectsCarouselInteraction() {
     
     // Touch events for mobile
     track.addEventListener('touchstart', (e) => {
+        localIsDragging = true;
         isDragging = true;
         const touch = e.touches[0];
-        startX = touch.pageX - track.offsetLeft;
-        scrollLeft = track.scrollLeft;
+        localStartX = touch.pageX - track.offsetLeft;
+        localScrollLeft = track.scrollLeft;
         track.classList.add('dragging');
-        track.style.animationPlayState = 'paused';
         lastX = touch.pageX;
         lastTime = Date.now();
-    }, { passive: true });
+    }, { passive: false });
     
     track.addEventListener('touchend', () => {
-        isDragging = false;
-        track.classList.remove('dragging');
-        track.style.animationPlayState = 'running';
+        if (localIsDragging) {
+            localIsDragging = false;
+            isDragging = false;
+            track.classList.remove('dragging');
+        }
     }, { passive: true });
     
     track.addEventListener('touchmove', (e) => {
-        if (!isDragging) return;
+        if (!localIsDragging) return;
+        e.preventDefault();
         
         const currentTime = Date.now();
         const touch = e.touches[0];
@@ -1814,24 +1833,38 @@ function setupProjectsCarouselInteraction() {
         }
         
         const x = touch.pageX - track.offsetLeft;
-        const walk = (x - startX) * 2;
-        track.scrollLeft = scrollLeft - walk;
+        const walk = (x - localStartX) * 2;
+        track.scrollLeft = localScrollLeft - walk;
         
         lastX = touch.pageX;
         lastTime = currentTime;
-    }, { passive: true });
+    }, { passive: false });
+    
+    // Wheel events for horizontal scrolling
+    carousel.addEventListener('wheel', (e) => {
+        // Convert vertical scroll to horizontal scroll
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+            e.preventDefault();
+            carousel.scrollLeft += e.deltaY;
+        }
+    }, { passive: false });
     
     // Keyboard navigation
     track.addEventListener('keydown', (e) => {
         if (e.key === 'ArrowLeft') {
-            track.scrollLeft -= 300;
+            e.preventDefault();
+            track.scrollLeft -= 350;
         } else if (e.key === 'ArrowRight') {
-            track.scrollLeft += 300;
+            e.preventDefault();
+            track.scrollLeft += 350;
         }
     });
     
     // Make track focusable for keyboard navigation
     track.setAttribute('tabindex', '0');
+    track.style.cursor = 'grab';
+    
+    console.log('Projects carousel manual interaction setup complete');
 }
 
 // Setup Carousel Manual Navigation

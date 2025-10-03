@@ -1451,8 +1451,35 @@ h6 { font-size: 1.1rem; }
 
 .projects-carousel {
     margin-top: 60px;
-    overflow: hidden;
+    overflow-x: auto;
+    overflow-y: hidden;
     position: relative;
+    cursor: grab;
+    scroll-behavior: smooth;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0,0,0,0.2) transparent;
+}
+
+.projects-carousel::-webkit-scrollbar {
+    height: 8px;
+}
+
+.projects-carousel::-webkit-scrollbar-track {
+    background: rgba(0,0,0,0.1);
+    border-radius: 4px;
+}
+
+.projects-carousel::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.3);
+    border-radius: 4px;
+}
+
+.projects-carousel::-webkit-scrollbar-thumb:hover {
+    background: rgba(0,0,0,0.5);
+}
+
+.projects-carousel:active {
+    cursor: grabbing;
 }
 
 /* Carousel navigation removed - auto-scroll only */
@@ -1634,6 +1661,17 @@ h6 { font-size: 1.1rem; }
         padding: 15px;
     }
     
+    .projects-carousel {
+        /* Ensure smooth touch scrolling on mobile */
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Hide scrollbar on mobile Firefox */
+        -ms-overflow-style: none; /* Hide scrollbar on IE/Edge */
+    }
+    
+    .projects-carousel::-webkit-scrollbar {
+        display: none; /* Hide scrollbar on mobile WebKit */
+    }
+    
     .projects-track {
         animation: autoScrollMobile 57s linear infinite;
         gap: 20px;
@@ -1641,6 +1679,8 @@ h6 { font-size: 1.1rem; }
         backface-visibility: hidden;
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
+        /* Better touch interaction */
+        touch-action: pan-x;
     }
     
     @keyframes autoScrollMobile {
