@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 140">
+  <rect width="100%" height="100%" fill="transparent" />
+  <g transform="translate(20,20)">
+    <!-- track -->
+    <rect x="0" y="40" width="560" height="18" rx="9" fill="#eee" />
+    <g id="cards">
+      <rect x="0" y="12" width="120" height="80" rx="10" fill="#fff" stroke="#e6d6c0" stroke-width="2">
+        <animate attributeName="x" dur="6s" values="0;440;0" repeatCount="indefinite"/>
+      </rect>
+      <rect x="140" y="12" width="120" height="80" rx="10" fill="#fff" stroke="#e6d6c0" stroke-width="2">
+        <animate attributeName="x" dur="6s" values="140;580;140" repeatCount="indefinite"/>
+      </rect>
+      <rect x="280" y="12" width="120" height="80" rx="10" fill="#fff" stroke="#e6d6c0" stroke-width="2">
+        <animate attributeName="x" dur="6s" values="280;720;280" repeatCount="indefinite"/>
+      </rect>
+    </g>
+  </g>
+</svg>
