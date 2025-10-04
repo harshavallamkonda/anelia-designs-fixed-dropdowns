@@ -2,10 +2,6 @@
 
 _A design-minded construction studio meets clean engineering — this repo contains the public landing site used to showcase portfolios, packages, and capture leads._
 
-<p align="center">
-   <img src="assets/animated-logo.svg" alt="Anelia animated logo" width="420" />
-</p>
-
 Welcome! This repository is a handcrafted, performance-minded static site built to demonstrate modern web design for a boutique construction + interiors studio. The README below is intentionally playful, precise, and practical — just like the website.
 
 ## ✨ Key Features (short)
@@ -14,15 +10,11 @@ Welcome! This repository is a handcrafted, performance-minded static site built 
 - Accessible forms (lead capture + contact) integrated with Web3Forms for secure email delivery.
 - True infinite projects carousel with touch/drag + wheel support and seamless looping.
 - Modular CSS and vanilla JS — easy to customize without framework lock-in.
-- Tiny animated previews embedded in this repo to explain features visually.
 
-<p align="center">
-   <img src="assets/animated-carousel.svg" alt="Animated carousel preview" width="560" />
-</p>
+This repository contains a few lightweight visual assets in `assets/` for the site — all images are optimized for fast loading.
 
 ### What makes this README unique
 
-- Live animated artwork included as SVGs in `/assets` (logo, carousel, form). They are light, editable, and give the README motion without heavy GIFs.
 - Clear instructions for local dev, plus quick tips to adapt the lead-capture forms safely.
 - A tiny design-system mindset: variables in `style.css` are used throughout for quick brand changes.
 
@@ -71,19 +63,9 @@ Pro tip: Use a device toolbar in DevTools to test touch/drag behavior for the ca
 - Keyboard navigation and focus styles are enabled.
 - Color contrast and font sizes are tuned for readability.
 
-## 🎞️ Visual Previews (animated)
+## 🎞️ Visual Previews
 
-Logo animation (SVG)
-
-<p align="center"><img src="assets/animated-logo.svg" width="420" alt="animated logo"/></p>
-
-Carousel concept (SVG)
-
-<p align="center"><img src="assets/animated-carousel.svg" width="560" alt="animated carousel"/></p>
-
-Form & submit micro-UX
-
-<p align="center"><img src="assets/animated-form.svg" width="480" alt="animated form"/></p>
+The `assets/` folder contains the site imagery used on the live page (logo, hero fallback, cleaned project images). Replace them with high-resolution images for a production deploy.
 
 ## 📬 Contact & Support
 
