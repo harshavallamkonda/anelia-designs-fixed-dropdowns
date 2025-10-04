@@ -10,8 +10,11 @@ Welcome! This repository is a handcrafted, performance-minded static site built 
 - Accessible forms (lead capture + contact) integrated with Web3Forms for secure email delivery.
 - True infinite projects carousel with touch/drag + wheel support and seamless looping.
 - Modular CSS and vanilla JS — easy to customize without framework lock-in.
+- Tiny animated previews embedded in this repo to explain features visually.
 
-This repository contains a few lightweight visual assets in `assets/` for the site — all images are optimized for fast loading.
+<p align="center">
+   <img src="assets/animated-carousel.svg" alt="Animated carousel preview" width="560" />
+</p>
 
 ### What makes this README unique
 
@@ -63,9 +66,19 @@ Pro tip: Use a device toolbar in DevTools to test touch/drag behavior for the ca
 - Keyboard navigation and focus styles are enabled.
 - Color contrast and font sizes are tuned for readability.
 
-## 🎞️ Visual Previews
+## 🎞️ Visual Previews (animated)
 
-The `assets/` folder contains the site imagery used on the live page (logo, hero fallback, cleaned project images). Replace them with high-resolution images for a production deploy.
+Logo animation (SVG)
+
+<p align="center"><img src="assets/animated-logo.svg" width="420" alt="animated logo"/></p>
+
+Carousel concept (SVG)
+
+<p align="center"><img src="assets/animated-carousel.svg" width="560" alt="animated carousel"/></p>
+
+Form & submit micro-UX
+
+<p align="center"><img src="assets/animated-form.svg" width="480" alt="animated form"/></p>
 
 ## 📬 Contact & Support
 
